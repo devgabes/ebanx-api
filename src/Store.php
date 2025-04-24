@@ -1,5 +1,6 @@
 <?php
 
+namespace App;
 class Store {
     private static string $file = __DIR__ . '/../data.json';
 
