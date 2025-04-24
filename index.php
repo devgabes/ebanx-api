@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/reset
     file_put_contents(__DIR__ . '/data.json', json_encode([]));
     http_response_code(200);
     echo "OK";
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/balance') === 0) {
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/ba
         http_response_code(200);
         echo $data[$accountId];
     }
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event') {
@@ -85,4 +87,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event
             'destination' => ['id' => $destination, 'balance' => $data[$destination]]
         ]);
     }
+    exit;
 }
