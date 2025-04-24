@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event
         http_response_code(201);
         echo json_encode(['destination' => ['id' => $destination, 'balance' => $data[$destination]]]);
     }
+
     if ($type === 'withdraw' && isset($input['origin'])) {
         $origin = $input['origin'];
         $data = Store::load();
@@ -52,5 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event
         Store::save($data);
         http_response_code(201);
         echo json_encode(['origin' => ['id' => $origin, 'balance' => $data[$origin]]]);
+    }
+
+    if ($type === 'transfer' && isset($input['origin'], $input['destination'])) {
+        $origin = $input['origin'];
+        $destination = $input['destination'];
+        $data = Store::load();
+
+        if (!isset($data[$origin])) {
+            http_response_code(404);
+            echo 0;
+            return;
+        }
+
+        $data[$origin] -= $amount;
+        if (!isset($data[$destination])) {
+            $data[$destination] = 0;
+        }
+        $data[$destination] += $amount;
+
+        Store::save($data);
+        http_response_code(201);
+        echo json_encode([
+            'origin' => ['id' => $origin, 'balance' => $data[$origin]],
+            'destination' => ['id' => $destination, 'balance' => $data[$destination]]
+        ]);
     }
 }
