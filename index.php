@@ -20,3 +20,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && strpos($_SERVER['REQUEST_URI'], '/ba
         echo $data[$accountId];
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event') {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    $type = $input['type'] ?? null;
+    $amount = $input['amount'] ?? 0;
+    $destination = $input['destination'] ?? null;
+
+    if ($type === 'deposit' && $destination) {
+        $data = Store::load();
+        if (!isset($data[$destination])) {
+            $data[$destination] = 0;
+        }
+        $data[$destination] += $amount;
+        Store::save($data);
+        http_response_code(201);
+        echo json_encode(['destination' => ['id' => $destination, 'balance' => $data[$destination]]]);
+    }
+}
