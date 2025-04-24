@@ -28,6 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/event
     $amount = $input['amount'] ?? 0;
     $destination = $input['destination'] ?? null;
 
+    if ($amount < 0 || !is_numeric($amount)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid amount']);
+        return;
+    }
+
     if ($type === 'deposit' && $destination) {
         $data = Store::load();
         if (!isset($data[$destination])) {
